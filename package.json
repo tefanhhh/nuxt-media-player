@@ -1,7 +1,8 @@
 {
-  "name": "nuxt-media-player",
+  "name": "@tefanhaetami/nuxt-media-player",
   "version": "1.0.0",
-  "private": true,
+  "description": "Nuxt application that supports for media player containing hls streaming format",
+  "private": false,
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
@@ -14,6 +15,21 @@
     "prepare": "husky install",
     "test": "jest"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tefanh/nuxt-media-player.git"
+  },
+  "keywords": [
+    "Nuxt",
+    "Media",
+    "Player",
+    "Streaming"
+  ],
+  "author": "Tefan Haetami",
+  "bugs": {
+    "url": "https://github.com/tefanh/nuxt-media-player/issues"
+  },
+  "homepage": "https://github.com/tefanh/nuxt-media-player#readme",
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --cache",
     "*.**": "prettier --check --ignore-unknown"
