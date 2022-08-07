@@ -12,7 +12,17 @@ import Vue from 'vue'
 import Plyr from 'plyr'
 import Hls, { Events, Level } from 'hls.js'
 
+class Data {
+  player: Plyr | null
+  hls: Hls | null
+  constructor() {
+    this.player = null
+    this.hls = null
+  }
+}
+
 export default Vue.extend({
+  data: () => new Data(),
   mounted() {
     const video: HTMLVideoElement = document.querySelector('video')!
     const source =
@@ -44,21 +54,23 @@ export default Vue.extend({
     if (!Hls.isSupported()) {
       video.src = source
     } else {
-      const hls: Hls = new Hls()
-      hls.loadSource(source)
-      hls.attachMedia(video)
+      this.hls = new Hls()
+      this.hls!.loadSource(source)
+      this.hls!.attachMedia(video)
 
-      function updateQuality(newQuality: number) {
-        hls.levels.forEach((level: Level, i) => {
+      const updateQuality: Function = (newQuality: number) => {
+        this.hls!.levels.forEach((level: Level, i: number) => {
           if (level.height === newQuality) {
             console.log('Found quality match with ' + newQuality)
-            hls.currentLevel = i
+            this.hls!.currentLevel = i
           }
         })
       }
 
-      hls.on(Events.MANIFEST_PARSED, () => {
-        const availableQualities: number[] = hls.levels.map((l) => l.height)
+      this.hls!.on(Events.MANIFEST_PARSED, () => {
+        const availableQualities: number[] = this.hls!.levels.map(
+          (l) => l.height
+        )
         options.quality = {
           default: availableQualities[0],
           options: availableQualities,
@@ -66,17 +78,20 @@ export default Vue.extend({
           onChange: (e: number) => updateQuality(e),
         }
 
-        const player: Plyr = new Plyr(video, options)
-        player.on('languagechange', () => {
-          console.log('jalan')
+        this.player = new Plyr(video, options)
+        this.player.on('languagechange', () => {
           setTimeout(() => {
-            console.log(hls.subtitleTrack)
-            console.log(player.currentTrack)
-            hls.subtitleTrack = player.currentTrack
+            this.hls!.subtitleTrack = this.player!.currentTrack
           }, 50)
         })
       })
     }
+  },
+  beforeDestroy() {
+    // pause the player
+    this.player?.pause()
+    // stop load hls
+    this.hls?.stopLoad()
   },
 })
 </script>
