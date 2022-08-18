@@ -13,12 +13,7 @@ import Plyr from 'plyr'
 import Hls, { Events, Level } from 'hls.js'
 
 class Data {
-  player: Plyr | null
-  hls: Hls | null
-  constructor() {
-    this.player = null
-    this.hls = null
-  }
+  constructor(public player?: Plyr, public hls?: Hls) {}
 }
 
 export default Vue.extend({
@@ -61,7 +56,6 @@ export default Vue.extend({
       const updateQuality: Function = (newQuality: number) => {
         this.hls!.levels.forEach((level: Level, i: number) => {
           if (level.height === newQuality) {
-            console.log('Found quality match with ' + newQuality)
             this.hls!.currentLevel = i
           }
         })
